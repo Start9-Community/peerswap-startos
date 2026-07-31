@@ -1,14 +1,21 @@
+import {
+  gRPCHostId as lndGrpcHostId,
+  gRPCPort as lndGrpcPort,
+} from 'lnd-startos/startos/interfaces'
 import { manifest as lndManifest } from 'lnd-startos/startos/manifest'
-import { elementsManifest } from './elementsManifest'
 import { settingsFile } from './fileModels/settings'
 import { i18n } from './i18n'
 import { reconcileConfig } from './reconcileConfig'
 import { sdk } from './sdk'
 import {
   dataDirMountpoint,
+  ElementsManifest,
   elementsMountpoint,
+  elementsRpcHostId,
+  elementsRpcPort,
   lndMountpoint,
   mainMounts,
+  peerswapdPort,
   uiPort,
 } from './utils'
 
@@ -31,18 +38,43 @@ export const main = sdk.setupMain(async ({ effects }) => {
     volumeId: 'main',
   })
 
-  // Mount the elements (Liquid) volume read-only only when the user enabled
-  // Liquid swaps. Using a string-literal manifest shape here because the sibling
-  // `elements` package isn't published as an npm dep yet (see ABOUT.md); when it
-  // is, replace this with `mountDependency<typeof elementsManifest>`.
+  // LND's gRPC over the LXC bridge. LND's StartOS-issued certificate covers the
+  // bridge address, so the mounted tls.cert validates against it; the old
+  // `lnd.startos:10009` DNS form is retired and would fail that check.
+  const lndAddress = await sdk.host
+    .getBridgeAddress(effects, {
+      packageId: 'lnd',
+      hostId: lndGrpcHostId,
+      internalPort: lndGrpcPort,
+    })
+    .const()
+  if (!lndAddress) {
+    throw new Error(
+      i18n(
+        'LND is not yet reachable on the internal network. Ensure LND is installed and running.',
+      ),
+    )
+  }
+
+  // Mount the elements (Liquid) volume read-only, and resolve its RPC address,
+  // only when the user enabled Liquid swaps.
+  let elementsAddress: string | null = null
   if (settings.liquidEnabled) {
-    mounts = mounts.mountDependency<typeof elementsManifest>({
+    mounts = mounts.mountDependency<ElementsManifest>({
       dependencyId: 'elements',
       mountpoint: elementsMountpoint,
       readonly: true,
       subpath: null,
       volumeId: 'main',
     })
+
+    elementsAddress = await sdk.host
+      .getBridgeAddress(effects, {
+        packageId: 'elements',
+        hostId: elementsRpcHostId,
+        internalPort: elementsRpcPort,
+      })
+      .const()
   }
 
   const peerswapSub = await sdk.SubContainer.of(
@@ -59,13 +91,15 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addOneshot('reconcile-config', {
       subcontainer: peerswapSub,
       // Rewrite peerswap.conf + pswebconfig.json from StartOS-managed settings
-      // BEFORE peerswapd starts. This is the supervisord-free replacement for
-      // the old fix-peerswap.sh wrapper: peerswapd reads a config we fully own,
-      // and although psweb's SavePS() may later rewrite peerswap.conf, peerswapd
+      // BEFORE peerswapd starts: peerswapd reads a config we fully own, and
+      // although psweb's SavePS() may later rewrite peerswap.conf, peerswapd
       // has already started against the correct file by then.
       exec: {
         fn: async () => {
-          await reconcileConfig(effects, settings, peerswapSub)
+          await reconcileConfig(effects, settings, peerswapSub, {
+            lndAddress,
+            elementsAddress,
+          })
           return null
         },
       },
@@ -73,18 +107,19 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
     .addDaemon('peerswapd', {
       subcontainer: peerswapSub,
-      // peerswapd reads its config from the data dir (peerswap.conf). It is the
-      // primary daemon; psweb drives it over gRPC.
       exec: {
-        command: ['peerswapd', `--configfile=${dataDirMountpoint}/peerswap.conf`],
+        command: [
+          'peerswapd',
+          `--configfile=${dataDirMountpoint}/peerswap.conf`,
+        ],
       },
       ready: {
         display: i18n('PeerSwap Daemon'),
-        // peerswapd is healthy once its gRPC/REST port is listening. pscli/psweb
+        // peerswapd is healthy once its gRPC port is listening. pscli and psweb
         // connect to this same port.
         gracePeriod: 60_000,
         fn: () =>
-          sdk.healthCheck.checkPortListening(effects, 42069, {
+          sdk.healthCheck.checkPortListening(effects, peerswapdPort, {
             successMessage: i18n('The PeerSwap daemon is ready'),
             errorMessage: i18n('The PeerSwap daemon is not ready'),
           }),
@@ -93,8 +128,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
     .addDaemon('psweb', {
       subcontainer: peerswapSub,
-      // psweb serves the web UI on :1984 and talks to the already-running
-      // peerswapd. -datadir points it at the StartOS-managed config dir.
+      // psweb serves the web UI and talks to the already-running peerswapd.
       exec: {
         command: ['psweb', `-datadir=${dataDirMountpoint}`],
       },

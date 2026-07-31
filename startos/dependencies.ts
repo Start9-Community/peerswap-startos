@@ -5,28 +5,31 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   const settings = await settingsFile.read().const(effects)
 
   const deps: Awaited<ReturnType<Parameters<typeof sdk.setupDependencies>[0]>> =
-    {}
-
-  // Lightning backend. LND is the only supported backend today; it becomes a
-  // hard running-dependency whenever the backend is configured (always, on a
-  // fresh install we seed lightningBackend='lnd').
-  if (!settings || settings.lightningBackend === 'lnd') {
-    deps.lnd = {
-      kind: 'running',
-      versionRange: '>=0.20.1-beta',
-      healthChecks: ['lnd'],
+    {
+      // LND is the only supported lightning backend, and peerswapd cannot run
+      // without one.
+      lnd: {
+        kind: 'running',
+        versionRange: '>=0.20.1-beta',
+        healthChecks: ['lnd'],
+      },
     }
-  }
 
-  // Liquid backend. Only a running dependency once the user enables Liquid swaps.
+  // Liquid becomes a running dependency only once the user enables L-BTC swaps.
+  //
+  // Both of the elements package's checks are required, not just its RPC
+  // ready-check: peerswapd's elements client loops on `getblockchaininfo` until
+  // verificationprogress reaches 1 and does not open its own gRPC listener
+  // before then, so an elements node that answers RPC but is still syncing
+  // leaves peerswapd hanging mid-startup. Gating on `sync-progress` too holds
+  // PeerSwap in the dependency-waiting state — which names the Liquid Sync
+  // check — instead of letting it start and report its daemon as unhealthy for
+  // the hours the sidechain takes to download.
   if (settings?.liquidEnabled) {
     deps.elements = {
       kind: 'running',
       versionRange: '>=23.2.1',
-      // `elementsd` is the daemon-ready health check exposed by the sibling
-      // elements-startos package (its RPC ready-check: cookie present + port
-      // listening). Gates on RPC availability, not full Liquid sync.
-      healthChecks: ['elementsd'],
+      healthChecks: ['elementsd', 'sync-progress'],
     }
   }
 
