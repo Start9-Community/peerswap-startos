@@ -12,10 +12,6 @@ import { sdk } from '../sdk'
  * binaries directly.
  */
 export const shape = z.object({
-  // Which lightning backend peerswapd talks to. LND only for now; structured as
-  // a field so a CLN backend can slot in later (see plan, Phase 2).
-  lightningBackend: z.enum(['lnd']).catch('lnd'),
-
   // Whether the user has opted into Liquid (L-BTC) swaps. When true we declare a
   // running dependency on `elements` and write the elementsd.* keys. When false,
   // peerswapd runs Bitcoin-only with no Liquid errors.

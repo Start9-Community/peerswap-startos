@@ -4,8 +4,8 @@ import { depElementsDescription, depLndDescription, long, short } from './i18n'
 export const manifest = setupManifest({
   id: 'peerswap',
   title: 'PeerSwap',
-  license: 'mit',
-  packageRepo: 'https://github.com/brendio/peerswap-startos',
+  license: 'MIT',
+  packageRepo: 'https://github.com/Start9-Community/peerswap-startos',
   upstreamRepo: 'https://github.com/ElementsProject/peerswap',
   marketingUrl: 'https://www.peerswap.dev/',
   donationUrl: null,
@@ -27,7 +27,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'LND',
-        icon: 'https://raw.githubusercontent.com/Start9Labs/lnd-startos/refs/heads/master/icon.svg',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/lnd-startos/f17336a10769efd8782a347662848c50c6270349/icon.svg',
       },
     },
     // Liquid (L-BTC) backend. Only becomes a running dependency when the user
@@ -37,10 +37,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'Elements (Liquid)',
-        // start-cli fetches + rasterizes this at pack time, so it MUST resolve
-        // to a real image — build peerswap only after elements-startos is
-        // public on GitHub with icon.svg on master.
-        icon: 'https://raw.githubusercontent.com/brendio/elements-startos/master/icon.svg',
+        icon: 'https://raw.githubusercontent.com/Start9-Community/elements-startos/master/icon.svg',
       },
     },
   },
