@@ -13,7 +13,7 @@ export const inputSpec = InputSpec.of({
     warning: null,
     default: null,
     required: false,
-    placeholder: 'http://mempool.embassy:3006',
+    placeholder: 'https://mempool.space',
     inputmode: 'url',
     patterns: [],
   }),

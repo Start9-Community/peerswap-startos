@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '5.0.4:1',
+  version: '5.0.4:2',
   releaseNotes: {
     en_US:
-      'Connects to LND and Elements over the StartOS internal bridge instead of the retired hostname form, which is what the mounted TLS certificate actually covers. Fixes the Swap Status action, which passed an option pscli does not accept and so never returned anything. Pins the peerswapd build to the revision the web UI is built against. Rebuilt on start-sdk 2.0.',
+      'Restores two actions that were built but never reachable. Swap Status — your PeerSwap peers, active swaps, and Liquid balance and deposit address — and Set Local Mempool URL, which points the web interface at your own block explorer for transaction links, are both available again under Actions.',
     es_ES:
-      'Se conecta a LND y Elements a través del puente interno de StartOS en lugar del formato de nombre de host retirado, que es lo que cubre realmente el certificado TLS montado. Corrige la acción Estado de los swaps, que pasaba una opción que pscli no acepta y por tanto nunca devolvía nada. Fija la compilación de peerswapd a la revisión con la que se construye la interfaz web. Reconstruido sobre start-sdk 2.0.',
+      'Restaura dos acciones que estaban implementadas pero nunca eran accesibles. Estado de los swaps —tus pares de PeerSwap, los swaps activos y el saldo y la dirección de depósito de Liquid— y Definir URL de mempool local, que apunta la interfaz web a tu propio explorador de bloques para los enlaces de transacciones, vuelven a estar disponibles en Acciones.',
     de_DE:
-      'Verbindet sich mit LND und Elements über die interne StartOS-Bridge statt über die ausgemusterte Hostnamen-Form — nur Erstere deckt das eingebundene TLS-Zertifikat tatsächlich ab. Behebt die Aktion Swap-Status, die eine von pscli nicht akzeptierte Option übergab und daher nie etwas zurückgab. Fixiert den peerswapd-Build auf die Revision, gegen die die Weboberfläche gebaut wird. Neu gebaut auf start-sdk 2.0.',
+      'Stellt zwei Aktionen wieder her, die zwar gebaut, aber nie erreichbar waren. Swap-Status — Ihre PeerSwap-Peers, aktive Swaps sowie Liquid-Guthaben und Einzahlungsadresse — und Lokale Mempool-URL festlegen, womit die Weboberfläche für Transaktionslinks auf Ihren eigenen Block-Explorer verweist, sind unter Aktionen wieder verfügbar.',
     pl_PL:
-      'Łączy się z LND i Elements przez wewnętrzny mostek StartOS zamiast wycofanej formy nazwy hosta — to właśnie ją obejmuje zamontowany certyfikat TLS. Naprawia akcję Status swapów, która przekazywała opcję nieobsługiwaną przez pscli i przez to nigdy nic nie zwracała. Przypina kompilację peerswapd do rewizji, względem której budowany jest interfejs webowy. Przebudowane na start-sdk 2.0.',
+      'Przywraca dwie akcje, które zostały zbudowane, ale nigdy nie były dostępne. Status swapów — Twoje węzły PeerSwap, aktywne swapy oraz saldo i adres depozytowy Liquid — oraz Ustaw lokalny adres mempool, który kieruje interfejs webowy do Twojego własnego eksploratora bloków dla odnośników do transakcji, znów są dostępne w sekcji Akcje.',
     fr_FR:
-      "Se connecte à LND et Elements via le pont interne de StartOS plutôt que par la forme de nom d'hôte retirée, qui est ce que le certificat TLS monté couvre réellement. Corrige l'action État des swaps, qui passait une option que pscli n'accepte pas et ne renvoyait donc jamais rien. Fige la compilation de peerswapd sur la révision contre laquelle l'interface web est construite. Reconstruit sur start-sdk 2.0.",
+      "Rétablit deux actions qui étaient développées mais inaccessibles. État des swaps — vos pairs PeerSwap, les swaps actifs, ainsi que le solde Liquid et son adresse de dépôt — et Définir l'URL du mempool local, qui oriente l'interface web vers votre propre explorateur de blocs pour les liens de transactions, sont de nouveau disponibles sous Actions.",
   },
   migrations: {
     up: async ({ effects }) => {},
