@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '5.0.4:2',
+  version: '7.0.0:0',
   releaseNotes: {
     en_US:
-      'Restores two actions that were built but never reachable. Swap Status — your PeerSwap peers, active swaps, and Liquid balance and deposit address — and Set Local Mempool URL, which points the web interface at your own block explorer for transaction links, are both available again under Actions.',
+      'Upgrades to PeerSwap v7.0.0, which fixes two CVEs in Liquid swap handling (upstream is withholding details until node operators have had time to upgrade) and bumps the swap protocol to v7 — both peers must be on a v7 build before they can swap with each other again. Also carries the earlier fix for LND 0.21 removing the deprecated SendToRouteSync RPC, which broke every swap on recent LND versions.',
     es_ES:
-      'Restaura dos acciones que estaban implementadas pero nunca eran accesibles. Estado de los swaps —tus pares de PeerSwap, los swaps activos y el saldo y la dirección de depósito de Liquid— y Definir URL de mempool local, que apunta la interfaz web a tu propio explorador de bloques para los enlaces de transacciones, vuelven a estar disponibles en Acciones.',
+      'Actualiza a PeerSwap v7.0.0, que corrige dos CVE en el manejo de swaps de Liquid (el proyecto original no publicará los detalles hasta que los operadores de nodos hayan tenido tiempo de actualizar) y eleva el protocolo de swap a v7 — ambos pares deben ejecutar una versión v7 para volver a intercambiar entre sí. También incluye la corrección anterior para la eliminación en LND 0.21 del RPC obsoleto SendToRouteSync, que rompía todos los swaps en versiones recientes de LND.',
     de_DE:
-      'Stellt zwei Aktionen wieder her, die zwar gebaut, aber nie erreichbar waren. Swap-Status — Ihre PeerSwap-Peers, aktive Swaps sowie Liquid-Guthaben und Einzahlungsadresse — und Lokale Mempool-URL festlegen, womit die Weboberfläche für Transaktionslinks auf Ihren eigenen Block-Explorer verweist, sind unter Aktionen wieder verfügbar.',
+      'Aktualisiert auf PeerSwap v7.0.0, das zwei CVEs in der Liquid-Swap-Verarbeitung behebt (Details werden vom Upstream-Projekt erst veröffentlicht, wenn Node-Betreiber genug Zeit zum Aktualisieren hatten) und das Swap-Protokoll auf v7 anhebt — beide Peers müssen auf einem v7-Build laufen, um wieder miteinander tauschen zu können. Enthält außerdem die frühere Korrektur dafür, dass LND 0.21 den veralteten SendToRouteSync-RPC entfernt hat, wodurch auf aktuellen LND-Versionen jeder Swap fehlschlug.',
     pl_PL:
-      'Przywraca dwie akcje, które zostały zbudowane, ale nigdy nie były dostępne. Status swapów — Twoje węzły PeerSwap, aktywne swapy oraz saldo i adres depozytowy Liquid — oraz Ustaw lokalny adres mempool, który kieruje interfejs webowy do Twojego własnego eksploratora bloków dla odnośników do transakcji, znów są dostępne w sekcji Akcje.',
+      'Aktualizuje do PeerSwap v7.0.0, który naprawia dwa CVE w obsłudze swapów Liquid (szczegóły zostaną opublikowane przez projekt źródłowy dopiero, gdy operatorzy węzłów będą mieli czas na aktualizację) i podnosi wersję protokołu swapów do v7 — obaj partnerzy muszą działać na wersji v7, aby móc ponownie wymieniać się między sobą. Zawiera także wcześniejszą poprawkę dla usunięcia w LND 0.21 przestarzałego RPC SendToRouteSync, który psuł każdy swap na najnowszych wersjach LND.',
     fr_FR:
-      "Rétablit deux actions qui étaient développées mais inaccessibles. État des swaps — vos pairs PeerSwap, les swaps actifs, ainsi que le solde Liquid et son adresse de dépôt — et Définir l'URL du mempool local, qui oriente l'interface web vers votre propre explorateur de blocs pour les liens de transactions, sont de nouveau disponibles sous Actions.",
+      "Met à niveau vers PeerSwap v7.0.0, qui corrige deux CVE dans la gestion des swaps Liquid (le projet amont ne publiera les détails qu'une fois les opérateurs de nœuds laissés le temps de mettre à jour) et fait passer le protocole de swap à la version 7 — les deux pairs doivent utiliser une version v7 pour pouvoir de nouveau échanger entre eux. Inclut également le correctif précédent pour la suppression, dans LND 0.21, du RPC obsolète SendToRouteSync, qui faisait échouer tous les swaps sur les versions récentes de LND.",
   },
   migrations: {
     up: async ({ effects }) => {},
