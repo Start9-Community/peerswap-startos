@@ -23,7 +23,8 @@ irreversibly. Start with small amounts, and only swap with peers you trust.
 
 ## Getting set up
 
-You need **LND** installed and running before PeerSwap will start.
+You need **LND** 0.21.1-beta:1 or later installed and running before PeerSwap
+will start.
 
 1. Start PeerSwap. It connects to LND and comes up in Bitcoin-only mode.
 2. Open the **Web UI** interface. You will land on the PeerSwap dashboard,

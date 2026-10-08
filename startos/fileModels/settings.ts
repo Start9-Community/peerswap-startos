@@ -11,7 +11,7 @@ import { sdk } from '../sdk'
  * This file lives on the `main` volume and is NOT consumed by the upstream
  * binaries directly.
  */
-export const shape = z.object({
+export const shape = z.looseObject({
   // Whether the user has opted into Liquid (L-BTC) swaps. When true we declare a
   // running dependency on `elements` and write the elementsd.* keys. When false,
   // peerswapd runs Bitcoin-only with no Liquid errors.

@@ -18,16 +18,23 @@ Freshly scaffolded? Work the
 guide page, not a file in this repo — read it, don't copy it in.
 
 Keep `README.md` (technical reference for an AI support or administering agent) and
-`instructions.md` (end-user docs) in sync with your changes.
+`instructions.md` (end-user docs) in sync with your changes. This file restates neither:
+whoever changes the package has both, so it carries only what they don't — repo mechanics,
+a change that looks right and is not, where the next thing gets added, a naming trap, a
+build or test invocation particular to this repo.
 
-**Bugs and feature requests are GitHub issues on this repo** — file them as you find them.
+**Fix a defect you spot rather than reporting it** — you have the package open and the
+context to be sure. File **a GitHub issue on this repo** only when the call isn't yours to
+make: you can't pin the cause down, two defensible fixes exist, or it's too large to ride on
+the work in hand. An open issue is a report, not a queue — implement one when you're asked
+to or when it's labelled `Approved`, then close it with `Closes #<n>`.
+
 Don't record work in the repo instead: no `TODO.md`, no `NOTES.md`, no `PLAN.md`. What you
 verified, tried, and decided belongs in the commit message and the PR body.
 
 ## This repo
 
 - **`pscli` takes exactly one global flag, `--rpchost`, before the subcommand.** There is no `--configfile`; passing one makes every call fail.
-- **`startos-settings.json` is the source of truth and neither binary reads it.** The `reconcile-config` oneshot projects it onto `peerswap.conf` and `pswebconfig.json` before peerswapd starts. That indirection is required because psweb's `SavePS()` rewrites `peerswap.conf` itself — regenerating each start is what stops the running config drifting. Merge, don't overwrite, `pswebconfig.json`: psweb's own fields (autoswap, telegram, colours) must survive.
-- **Enabling Liquid gates on the elements package's `sync-progress` check, not just `elementsd`.** peerswapd's elements client blocks until `verificationprogress` reaches 1 and never opens its own gRPC listener before then, so gating on RPC readiness alone leaves the daemon hanging for the hours the sidechain takes to sync.
-- **Dependency addresses come from `sdk.host.getBridgeAddress`**, never a `<pkg>.startos:<port>` literal — that DNS form is retired, and LND's StartOS-issued certificate covers the bridge address, not the hostname.
-- **Liquid enabled without available credentials starts Bitcoin-only and warns**, rather than failing. Keep that fallback — elements may still be coming up when the oneshot runs.
+- **Merge, don't overwrite, `pswebconfig.json`** — psweb's own fields (autoswap, telegram, colours) live in it and must survive each start's reconcile.
+- **Keep `sync-progress` in the elements dependency's health checks**, not just `elementsd`: peerswapd hangs mid-startup against an unsynced Liquid node.
+- **Reach dependencies with `sdk.host.getBridgeAddress`**, never a `<pkg>.startos:<port>` literal — LND's certificate covers the bridge address, not that hostname.

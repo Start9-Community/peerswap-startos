@@ -105,7 +105,7 @@ Two, one always required and one conditional.
 
 **Elements is gated on being synced, not just running**, and that is deliberate. PeerSwap's Liquid client loops on the node's chain info until verification completes and does not open its own listener before then — so an Elements that answers RPC while still downloading would leave the daemon hanging mid-startup. Requiring the sync check holds PeerSwap in the dependency-waiting state, naming the check it is waiting on, instead of showing a service that started and then went unhealthy for however many hours the sidechain takes.
 
-**LND is unconditional.** The daemon has no other backend, so the package refuses to start without a reachable LND rather than coming up broken.
+**LND is unconditional**, at `0.21.1-beta:1` or later — the first LND whose gRPC certificate covers the bridge address this package dials. The daemon has no other backend, so the package refuses to start without a reachable LND rather than coming up broken.
 
 ## Network Access and Interfaces
 
@@ -159,6 +159,7 @@ Reports your PeerSwap-enabled peers, the swaps currently in flight, and — when
 
 - **Requires the service to be running**, since it queries the daemon over its local gRPC port from a temporary container.
 - **Read-only.** It changes nothing.
+- Peers and active swaps are the daemon's JSON output, in copyable multi-line fields. The Liquid balance is shown in sats, and the deposit address alone, with a QR code.
 - Individual queries that fail are reported as unavailable rather than failing the whole action.
 
 ### Set Local Mempool URL
@@ -224,7 +225,7 @@ file_models:
   - pswebconfig.json # StartOS-owned fields pinned, psweb's own fields merged
 startos_managed_env_vars: [] # everything is config files
 dependencies:
-  - lnd # required, kind: running, healthChecks: [lnd], admin macaroon
+  - lnd # required, >=0.21.1-beta:1, kind: running, healthChecks: [lnd], admin macaroon
   - elements # only while Liquid is enabled; healthChecks: [elementsd, sync-progress]
 interfaces:
   ui: { type: ui, port: 1984 } # no authentication of any kind

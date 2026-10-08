@@ -44,6 +44,6 @@ put `peerswap` in place first.
 1. Set `PSWEB_VERSION` and `PEERSWAP_COMMIT` in the `Dockerfile`.
 2. Bump `startos/versions/current.ts` to `<peerswap-web version>:<revision>` and
    write release notes for all five locales.
-3. `npm run check`, then `make x86` and install on a real StartOS box — the
+3. `make x86` (it type-checks before bundling) and install on a real StartOS box — the
    daemon/UI pairing is exactly what a mismatched pin breaks, and it only
    surfaces at runtime.

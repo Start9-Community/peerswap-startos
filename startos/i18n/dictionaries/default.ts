@@ -10,7 +10,7 @@ const dict = {
   'Enabling Liquid adds a running dependency on the Elements (Liquid) service. Make sure it is installed first.': 6,
   'LND is not yet reachable on the internal network. Ensure LND is installed and running.': 7,
   'Liquid Address': 8,
-  'Liquid Balance': 9,
+  'Liquid Balance (sats)': 9,
   'List your PeerSwap-enabled peers and active swaps, plus your Liquid balance and a deposit address when Liquid is enabled': 10,
   'Local Mempool URL': 11,
   'Optional base URL of a local mempool/block explorer (e.g. a self-hosted mempool). Leave blank to use the public default.': 12,
