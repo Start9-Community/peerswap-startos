@@ -1,5 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
-import { depElementsDescription, depLndDescription, long, short } from './i18n'
+import { long, short } from './i18n'
 
 export const manifest = setupManifest({
   id: 'peerswap',
@@ -17,28 +17,7 @@ export const manifest = setupManifest({
         dockerBuild: {},
       },
       arch: ['aarch64', 'x86_64'],
-    },
-  },
-  dependencies: {
-    // The lightning backend. Optional at the manifest level; `dependencies.ts`
-    // turns it into a hard running-dependency once a backend is configured.
-    lnd: {
-      description: depLndDescription,
-      optional: true,
-      metadata: {
-        title: 'LND',
-        icon: 'https://raw.githubusercontent.com/Start9Labs/lnd-startos/f17336a10769efd8782a347662848c50c6270349/icon.svg',
-      },
-    },
-    // Liquid (L-BTC) backend. Only becomes a running dependency when the user
-    // enables Liquid swaps; otherwise peerswap runs Bitcoin-only.
-    elements: {
-      description: depElementsDescription,
-      optional: true,
-      metadata: {
-        title: 'Elements (Liquid)',
-        icon: 'https://raw.githubusercontent.com/Start9-Community/elements-startos/master/icon.svg',
-      },
+      emulateMissing: false,
     },
   },
 })

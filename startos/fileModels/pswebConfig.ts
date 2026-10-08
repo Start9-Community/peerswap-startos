@@ -9,25 +9,23 @@ import { sdk } from '../sdk'
  * names verbatim (PascalCase): `AllowSwapRequests`, `ListenPort`, `RpcHost`,
  * `DataDir`, `BitcoinSwaps`, `LocalMempool`, `Elements*`, etc.
  *
- * We only declare and manage the StartOS-owned subset and `.passthrough()` the
- * rest so that values psweb itself writes (telegram, autoswap, color scheme,
- * peg-in bookkeeping, ...) survive a reconcile.
+ * We only declare and manage the StartOS-owned subset and keep the shape loose
+ * so that values psweb itself writes (telegram, autoswap, color scheme, peg-in
+ * bookkeeping, ...) survive a reconcile.
  */
-export const shape = z
-  .object({
-    AllowSwapRequests: z.boolean().optional(),
-    RpcHost: z.string().optional(),
-    ListenPort: z.string().optional(),
-    DataDir: z.string().optional(),
-    BitcoinSwaps: z.boolean().optional(),
-    LocalMempool: z.string().optional(),
-    ElementsHost: z.string().optional(),
-    ElementsPort: z.string().optional(),
-    ElementsUser: z.string().optional(),
-    ElementsPass: z.string().optional(),
-    ElementsWallet: z.string().optional(),
-  })
-  .passthrough()
+export const shape = z.looseObject({
+  AllowSwapRequests: z.boolean().optional(),
+  RpcHost: z.string().optional(),
+  ListenPort: z.string().optional(),
+  DataDir: z.string().optional(),
+  BitcoinSwaps: z.boolean().optional(),
+  LocalMempool: z.string().optional(),
+  ElementsHost: z.string().optional(),
+  ElementsPort: z.string().optional(),
+  ElementsUser: z.string().optional(),
+  ElementsPass: z.string().optional(),
+  ElementsWallet: z.string().optional(),
+})
 
 export type PswebConfig = z.infer<typeof shape>
 

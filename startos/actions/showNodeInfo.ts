@@ -40,20 +40,40 @@ export const showNodeInfo = sdk.Action.withoutInput(
       async (subc) => {
         const run = async (...args: string[]) => {
           const res = await subc.exec(pscli(...args))
-          return res.exitCode === 0
-            ? String(res.stdout).trim()
-            : i18n('Unavailable')
+          return res.exitCode === 0 ? String(res.stdout).trim() : null
+        }
+        const field = async (key: string, ...args: string[]) => {
+          try {
+            return String(JSON.parse((await run(...args)) ?? '')[key] ?? '')
+          } catch {
+            return ''
+          }
         }
 
         const value: T.ActionResultMember[] = [
-          single(i18n('PeerSwap Peers'), await run('listpeers')),
-          single(i18n('Active Swaps'), await run('listactiveswaps')),
+          multiline(
+            i18n('PeerSwap Peers'),
+            (await run('listpeers')) ?? i18n('Unavailable'),
+          ),
+          multiline(
+            i18n('Active Swaps'),
+            (await run('listactiveswaps')) ?? i18n('Unavailable'),
+          ),
         ]
 
         if (liquidEnabled) {
+          const balance = await field('sat_amount', 'lbtc-getbalance')
+          const address = await field('address', 'lbtc-getaddress')
           value.push(
-            single(i18n('Liquid Balance'), await run('lbtc-getbalance')),
-            single(i18n('Liquid Address'), await run('lbtc-getaddress'), true),
+            single(
+              i18n('Liquid Balance (sats)'),
+              balance || i18n('Unavailable'),
+            ),
+            single(
+              i18n('Liquid Address'),
+              address || i18n('Unavailable'),
+              !!address,
+            ),
           )
         }
 
@@ -67,6 +87,16 @@ export const showNodeInfo = sdk.Action.withoutInput(
     )
   },
 )
+
+function multiline(name: string, value: string): T.ActionResultMember {
+  return {
+    type: 'multiline',
+    name,
+    description: null,
+    value,
+    copyable: true,
+  }
+}
 
 function single(name: string, value: string, qr = false): T.ActionResultMember {
   return {
